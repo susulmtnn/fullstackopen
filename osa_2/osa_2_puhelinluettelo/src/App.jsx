@@ -25,7 +25,11 @@ const App = () => {
       name: newName,
       id: String(persons.length+1),
     }
-
+    const personsList = persons.map((person) => person.name)
+    if (personsList.includes(newName)){
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
     setPersons(persons.concat(personObject))
     setNewName('')
 
