@@ -18,14 +18,18 @@ const FilterForm = (props) => (
         </div>
       </form>
       <div>
-        {props.filteredPersons.map((person) => (
-  <Person key={person.id} person={person} />
-))}
+        <Persons persons={props.filteredPersons} />
       </div>
       </>
 )
 
-
+const Persons = (props) => (
+  <div>
+    {props.persons.map((person) => (
+      <Person key={person.id} person={person} />
+    ))}
+  </div>
+)
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -56,6 +60,7 @@ const App = () => {
 
   const addSearch =(e) => {
     e.preventDefault()
+    setNewSearch('')
   }
 
 
