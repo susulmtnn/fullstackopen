@@ -5,7 +5,7 @@ import personService from './services/person'
 
 const Person = (props) => (
 <p>
-  {props.person.name} {props.person.number}
+  {props.person.name} {props.person.number} <button type="button" onClick={() => props.onDelete(props.person.id)}>delete</button>
 </p>
 )
 
@@ -21,7 +21,7 @@ const FilterForm = (props) => (
         </div>
       </form>
       <div>
-        <Persons persons={props.filteredPersons} />
+        <Persons persons={props.filteredPersons} onDelete={props.onDelete} />
       </div>
       </>
 )
@@ -29,7 +29,7 @@ const FilterForm = (props) => (
 const Persons = (props) => (
   <div>
     {props.persons.map((person) => (
-      <Person key={person.id} person={person} />
+      <Person key={person.id} person={person} onDelete={props.onDelete} />
     ))}
   </div>
 )
@@ -73,6 +73,15 @@ const App = () => {
 
   const handleNewSearch= (e) =>{
     setNewSearch(e.target.value)
+  }
+  const deletePerson = (id) => { const person = persons.find(person => person.id === id)
+  if (window.confirm(`Delete ${person.name}?`)) {
+    personService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+  }
   }
 
   const filteredPersons = persons.filter((person) =>
@@ -135,7 +144,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>{persons.map(person =>
-        <Person key={person.id} person={person}/>
+        <Person key={person.id} person={person} onDelete = {deletePerson}/>
         )}
       </div>
       <FilterForm
@@ -143,6 +152,7 @@ const App = () => {
         newSearch={newSearch}
         handleNewSearch={handleNewSearch}
         filteredPersons={filteredPersons}
+        onDelete={deletePerson}
         />
       </div>
       )
