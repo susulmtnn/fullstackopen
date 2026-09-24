@@ -84,18 +84,25 @@ const App = () => {
     const personObject={
       name: newName,
       number: newNumber,
-      id: String(persons.length+1),
     }
     const personsList = persons.map((person) => person.name)
     if (personsList.includes(newName)){
       alert(`${newName} is already added to phonebook`)
       return
     }
-    if (personObject.name && personObject.number)
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
 
+     if (personObject.name && personObject.number){
+    axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
+}
+  else {
+    console.log("person could not be added, missing details")
+  }
   }
 
 
