@@ -34,6 +34,11 @@
       "name": "kissa",
       "number": "1234455",
       "id": "g27DrCjnfPI"
+    },
+    {
+      "name": "kana2",
+      "number": "3444",
+      "id": "73bisd0rPn8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

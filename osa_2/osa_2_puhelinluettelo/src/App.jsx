@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
+import personService from './services/person'
 
 const Person = (props) => (
 <p>
@@ -47,13 +48,18 @@ const App = () => {
 
   
    useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
+    // console.log('effect')
+    // axios
+    //   .get('http://localhost:3001/persons')
+    //   .then(response => {
+    //     console.log('promise fulfilled')
+    //     setPersons(response.data)
+    //   })
+    personService
+      .getAll()
+        .then(initialPerson =>
+          setPersons(initialPerson)
+        )
   }, [])
   console.log('render', persons.length, 'persons')
 
@@ -92,15 +98,22 @@ const App = () => {
     }
 
      if (personObject.name && personObject.number){
-    axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data))
+    personService
+      .create(personObject)
+        .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
-}
-  else {
+
+    // axios
+    //   .post('http://localhost:3001/persons', personObject)
+    //   .then(response => {
+    //     setPersons(persons.concat(response.data))
+    //     setNewName('')
+    //     setNewNumber('')
+    //   })
+  } else {
     console.log("person could not be added, missing details")
   }
   }
