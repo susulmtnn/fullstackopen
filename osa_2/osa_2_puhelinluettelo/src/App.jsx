@@ -102,10 +102,28 @@ const App = () => {
     }
     const personsList = persons.map((person) => person.name)
     if (personsList.includes(newName)){
-      alert(`${newName} is already added to phonebook`)
+      // update the person
+      const existingPerson = persons.find(person => person.name === newName)
+
+      if (window.confirm(`Replace the old number with a new one?`)) {
+        const changedPerson = { ...existingPerson, number: newNumber }
+
+        personService
+          .update(existingPerson.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(
+              persons.map(person =>
+                person.id !== existingPerson.id ? person : returnedPerson
+              )
+            )
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+
       return
     }
-
+    //aad new person
      if (personObject.name && personObject.number){
     personService
       .create(personObject)

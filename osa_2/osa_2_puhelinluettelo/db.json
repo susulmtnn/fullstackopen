@@ -2,12 +2,12 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "393394934",
       "id": "1"
     },
     {
       "name": "Ada Lovelace",
-      "number": "39-44-5323523",
+      "number": "9293938",
       "id": "2"
     },
     {
@@ -34,6 +34,11 @@
       "name": "kana2",
       "number": "3444",
       "id": "73bisd0rPn8"
+    },
+    {
+      "name": "Arto Hellas ",
+      "number": "1234",
+      "id": "l3ztXHPLp3I"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
