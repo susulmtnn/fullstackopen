@@ -4,12 +4,12 @@ import { useEffect } from 'react'
 import personService from './services/person'
 import './App.css'
 
-const BetterError = ({ message }) => {
+const BetterError = ({ message, errorBoolean }) => {
   if (message === null) {
     return null
   }
 
-  return <div className="betterError">{message}</div>
+  return <div className={errorBoolean ? 'error' : 'betterError'}>{message}</div>
 }
 
 const Person = (props) => (
@@ -55,6 +55,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
   const [newBetterError, setNewBetterError] = useState(null)
+  const [errorBoolean, setErrorBoolean] = useState(false)
 
   
    useEffect(() => {
@@ -91,8 +92,16 @@ const App = () => {
       .remove(id)
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
-         setNewBetterError(`Deleted ${person.name}`),
-          setTimeout(() => {
+        setErrorBoolean(false)
+        setNewBetterError(`Deleted ${person.name}`)
+        setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
+      })
+      .catch(() => {
+        setErrorBoolean(true)
+        setNewBetterError(`Failed to delete ${person.name}`)
+        setTimeout(() => {
           setNewBetterError(null)
         }, 5000)
       })
@@ -131,12 +140,20 @@ const App = () => {
                 person.id !== existingPerson.id ? person : returnedPerson
               )
             )
-             setNewBetterError(`Updated ${returnedPerson.name}`),
-          setTimeout(() => {
-          setNewBetterError(null)
-        }, 5000)
+            setErrorBoolean(false)
+            setNewBetterError(`Updated ${returnedPerson.name}`)
+            setTimeout(() => {
+              setNewBetterError(null)
+            }, 5000)
             setNewName('')
             setNewNumber('')
+          })
+          .catch(() => {
+            setErrorBoolean(true)
+            setNewBetterError(`Failed to update ${existingPerson.name}`)
+            setTimeout(() => {
+              setNewBetterError(null)
+            }, 5000)
           })
       }
 
@@ -146,14 +163,22 @@ const App = () => {
      if (personObject.name && personObject.number){
     personService
       .create(personObject)
-        .then(returnedPerson => {
+      .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-         setNewBetterError(`Added ${returnedPerson.name}`),
-          setTimeout(() => {
+        setErrorBoolean(false)
+        setNewBetterError(`Added ${returnedPerson.name}`)
+        setTimeout(() => {
           setNewBetterError(null)
         }, 5000)
         setNewName('')
         setNewNumber('')
+      })
+      .catch(() => {
+        setErrorBoolean(true)
+        setNewBetterError(`Failed to add ${personObject.name}`)
+        setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
       })
 
     // axios
@@ -172,7 +197,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <BetterError message={newBetterError} />
+      <BetterError message={newBetterError} errorBoolean={errorBoolean} />
       <form onSubmit={addPerson}>
         <div>
           name: <input value={newName} onChange={handleNewPerson} />

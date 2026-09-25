@@ -21,29 +21,14 @@
       "id": "4"
     },
     {
-      "name": "kana",
-      "number": "12345556",
-      "id": "VYyhr3tQof0"
-    },
-    {
       "name": "Arto Hellas ",
       "number": "1234",
       "id": "l3ztXHPLp3I"
     },
     {
-      "name": "kanna",
-      "number": "222222",
-      "id": "qbn7ppoyUSA"
-    },
-    {
       "name": "keffioejf",
       "number": "12234",
       "id": "PGlgXAl4RFM"
-    },
-    {
-      "name": "jduehfur",
-      "number": "123455",
-      "id": "9LaH8761RMs"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
