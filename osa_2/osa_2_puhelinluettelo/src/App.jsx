@@ -2,6 +2,15 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
 import personService from './services/person'
+import './App.css'
+
+const BetterError = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return <div className="betterError">{message}</div>
+}
 
 const Person = (props) => (
 <p>
@@ -45,6 +54,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [newBetterError, setNewBetterError] = useState(null)
 
   
    useEffect(() => {
@@ -60,6 +70,7 @@ const App = () => {
         .then(initialPerson =>
           setPersons(initialPerson)
         )
+
   }, [])
   console.log('render', persons.length, 'persons')
 
@@ -80,6 +91,10 @@ const App = () => {
       .remove(id)
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
+         setNewBetterError(`Deleted ${person.name}`),
+          setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
       })
   }
   }
@@ -116,6 +131,10 @@ const App = () => {
                 person.id !== existingPerson.id ? person : returnedPerson
               )
             )
+             setNewBetterError(`Updated ${returnedPerson.name}`),
+          setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
             setNewName('')
             setNewNumber('')
           })
@@ -129,6 +148,10 @@ const App = () => {
       .create(personObject)
         .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+         setNewBetterError(`Added ${returnedPerson.name}`),
+          setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
         setNewName('')
         setNewNumber('')
       })
@@ -149,6 +172,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <BetterError message={newBetterError} />
       <form onSubmit={addPerson}>
         <div>
           name: <input value={newName} onChange={handleNewPerson} />
