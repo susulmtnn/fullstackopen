@@ -62,6 +62,19 @@ app.get('/api/persons/:id', (request, response) => {
     
 })
 
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: String(Math.random()),
+  }
+
+  persons = persons.concat(person)
+  response.json(person)
+})
+
 app.delete('/api/delete/:id', (request, response)=>{
     const id = request.params.id
     const personExists = persons.find((personExists) => personExists.id === id)
