@@ -1,0 +1,25 @@
+{
+  "name": "puhelinluettelo_backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/susulmtnn/fullstackopen#readme",
+  "bugs": {
+    "url": "https://github.com/susulmtnn/fullstackopen/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/susulmtnn/fullstackopen.git"
+  },
+  "license": "ISC",
+  "author": "susulmtnn",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
