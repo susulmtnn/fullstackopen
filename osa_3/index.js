@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
 // app.use(morgan('tiny'))
@@ -42,6 +43,7 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(cors())
 
 
 app.get('/api/persons', (request, response) => {
@@ -96,7 +98,7 @@ app.post('/api/persons', (request, response) => {
   return response.status(201).json(person)
 })
 
-app.delete('/api/delete/:id', (request, response)=>{
+app.delete('/api/persons/:id', (request, response)=>{
     const id = request.params.id
     const personExists = persons.find((personExists) => personExists.id === id)
     if (personExists){
