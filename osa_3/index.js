@@ -109,15 +109,24 @@ person.save().then(savedPerson => {
 })
 })
 
+// app.delete('/api/persons/:id', (request, response)=>{
+//     const id = request.params.id
+//     const personExists = persons.find((personExists) => personExists.id === id)
+//     if (personExists){
+//         persons = persons.filter((person) => person.id !== id)
+//         response.status(204).end()
+//     }
+//     else
+//      {response.status(404).end()}
+// })
+
+
 app.delete('/api/persons/:id', (request, response)=>{
-    const id = request.params.id
-    const personExists = persons.find((personExists) => personExists.id === id)
-    if (personExists){
-        persons = persons.filter((person) => person.id !== id)
+    Person.findByIdAndDelete(request.params.id)
+      .then(result =>(
         response.status(204).end()
-    }
-    else
-     {response.status(404).end()}
+      ))
+      .catch(error => next(error))
 })
 
 
