@@ -51,6 +51,28 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body
+
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        person.name = name
+        person.number = number
+        return person.save()
+      } else {
+        response.status(404).end()
+        return null
+      }
+    })
+    .then(updatedPerson => {
+      if (updatedPerson != null) {
+        response.json(updatedPerson)
+      }
+    })
+    .catch(error => next(error))
+})
+
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
