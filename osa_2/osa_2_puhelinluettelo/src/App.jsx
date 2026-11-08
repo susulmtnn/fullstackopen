@@ -148,12 +148,12 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
-          .catch(() => {
-            setErrorBoolean(true)
-            setNewBetterError(`Failed to update ${existingPerson.name}`)
-            setTimeout(() => {
-              setNewBetterError(null)
-            }, 5000)
+        .catch(error =>{
+        setErrorBoolean(true)
+        setNewBetterError(error.response.data.error)
+           setTimeout(() => {
+          setNewBetterError(null)
+        }, 5000)
           })
       }
 
@@ -173,10 +173,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
-      .catch(() => {
+      .catch(error =>{
         setErrorBoolean(true)
-        setNewBetterError(`Failed to add ${personObject.name}`)
-        setTimeout(() => {
+        setNewBetterError(error.response.data.error)
+           setTimeout(() => {
           setNewBetterError(null)
         }, 5000)
       })
