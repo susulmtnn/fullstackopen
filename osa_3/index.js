@@ -8,9 +8,9 @@ const app = express()
 
 // app.use(morgan('tiny'))
 
-morgan.token('posttoken', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('posttoken', function (req) { return JSON.stringify(req.body) })
 
-app.use(morgan('method :url :status :response-time ms :posttoken'));
+app.use(morgan('method :url :status :response-time ms :posttoken'))
 
 app.use(express.json())
 app.use(express.static('dist'))
@@ -88,21 +88,21 @@ app.post('/api/persons', (request, response, next) => {
     name: body.name,
     number: body.number,
     //id: String(Math.random()),
-})
+  })
 
-person.save().then(savedPerson => {
-  response.json(savedPerson)
-})
-  .catch(error => next(error))
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
+    .catch(error => next(error))
 })
 
 
 app.delete('/api/persons/:id', (request, response, next)=>{
-    Person.findByIdAndDelete(request.params.id)
-      .then(result =>(
-        response.status(204).end()
-      ))
-      .catch(error => next(error))
+  Person.findByIdAndDelete(request.params.id)
+    .then(
+      response.status(204).end()
+    )
+    .catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
