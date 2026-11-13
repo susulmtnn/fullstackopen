@@ -96,6 +96,15 @@ test('the identifying parameter is id', async()=>{
     assert(response.body[0].id)
 })
 
+test('blog can be deleted by id'), async()=>{
+    await api
+        .delete('/api/blogs/5a422a851b54a676234d17f7')
+        .expect(204)
+    const response = await api.get('/api/blogs')
+    const all_blogs=response.body.map(e=>e.id)
+    assert.strictEqual(all_blogs.includes("5a422a851b54a676234d17f7"), false)
+}
+
 after(async () => {
   await mongoose.connection.close()
 })
