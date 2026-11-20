@@ -11,6 +11,7 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
   const [showAll, setShowAll] = useState(true)
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
 
   useEffect(() => {
@@ -22,13 +23,15 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
       setUser(user)
     }
   }, [])
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
+    blogService.setToken(null)
     setUser(null)
-    }
+  }
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -36,7 +39,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -45,6 +48,24 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+    }
+  }
+
+  const handleBlogChange = event => {
+    const { name, value } = event.target
+    setNewBlog({ ...newBlog, [name]: value })
+  }
+
+  const addBlog = async event => {
+    event.preventDefault()
+
+    try {
+      const createdBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(createdBlog))
+      setNewBlog({ title: '', author: '', url: '' })
+      setErrorMessage(null)
+    } catch {
+      setErrorMessage('could not create blog')
     }
   }
 
@@ -74,12 +95,29 @@ const App = () => {
     </form>
   )
 
-  // const blogForm = () => (
-  //   <form onSubmit={addBlog}>
-  //     <input value={newBlog} onChange={handleBlogChange} />
-  //     <button type="submit">save</button>
-  //   </form>
-  // )
+  const createBlogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+        <label>
+          title
+          <input name="title" type="text"  value={newBlog.title} onChange={handleBlogChange} required />
+        </label>
+      </div>
+      <div>
+        <label>
+          author
+          <input name="author" type="text" value={newBlog.author} onChange={handleBlogChange} />
+        </label>
+      </div>
+      <div>
+        <label>
+          url
+          <input name="url" type="text" value={newBlog.url} onChange={handleBlogChange} required />
+        </label>
+      </div>
+      <button type="submit">create</button>
+    </form>
+  )
 
 
     return (
@@ -92,6 +130,7 @@ const App = () => {
         <button onClick={() => handleLogout()}>
           logout
         </button>
+        {createBlogForm()}
         </div>
         )}
       <div>
