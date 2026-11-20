@@ -10,6 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
+  const [messageColor, setMessageColor]= useState('red')
   const [showAll, setShowAll] = useState(true)
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
@@ -45,6 +46,7 @@ const App = () => {
       setPassword('')
     } catch {
       setErrorMessage('wrong credentials')
+      setMessageColor('red')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -58,14 +60,30 @@ const App = () => {
 
   const addBlog = async event => {
     event.preventDefault()
+    if (!newBlog.title.trim() || !newBlog.author.trim() || !newBlog.url.trim()) {
+      setErrorMessage('Please fill all fields')
+      setMessageColor('red')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      return
+      }
 
     try {
       const createdBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(createdBlog))
       setNewBlog({ title: '', author: '', url: '' })
-      setErrorMessage(null)
+      setErrorMessage('New blog created')
+      setMessageColor('green')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     } catch {
       setErrorMessage('could not create blog')
+      setMessageColor('red')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -94,6 +112,10 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
+  const Notification = ({message, color})=>{
+    if (message) return (<div style={{ border:'3px solid',borderColor : color }}> {message} </div>) 
+    else return null
+  }
 
   const createBlogForm = () => (
     <form onSubmit={addBlog}>
@@ -123,7 +145,7 @@ const App = () => {
     return (
     <div>
       <h1>BlogsApp</h1>
-
+      <Notification message={errorMessage} color={messageColor}></Notification>
       {!user && loginForm()}
       {user && (
         <div> <h1>Welcome {user.name}</h1>
