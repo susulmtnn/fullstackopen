@@ -1,0 +1,1 @@
+The frontend part contains the code written by me and the exercises. But it is made to be running with the model answers from the course that are in the backend folder.
