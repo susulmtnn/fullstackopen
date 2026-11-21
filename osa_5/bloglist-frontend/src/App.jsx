@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useImperativeHandle } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,7 +12,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [messageColor, setMessageColor]= useState('red')
   const [showAll, setShowAll] = useState(true)
-  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+  const createBlogFormRef = useRef()
 
 
   useEffect(() => {
@@ -53,13 +53,8 @@ const App = () => {
     }
   }
 
-  const handleBlogChange = event => {
-    const { name, value } = event.target
-    setNewBlog({ ...newBlog, [name]: value })
-  }
 
-  const addBlog = async event => {
-    event.preventDefault()
+  const addBlog = async newBlog => {
     if (!newBlog.title.trim() || !newBlog.author.trim() || !newBlog.url.trim()) {
       setErrorMessage('Please fill all fields')
       setMessageColor('red')
@@ -72,7 +67,7 @@ const App = () => {
     try {
       const createdBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(createdBlog))
-      setNewBlog({ title: '', author: '', url: '' })
+      createBlogFormRef.current.toggleVisibility()
       setErrorMessage('New blog created')
       setMessageColor('green')
       setTimeout(() => {
@@ -86,6 +81,99 @@ const App = () => {
       }, 5000)
     }
   }
+const CreateBlogForm = ({ addBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = event => {
+    event.preventDefault()
+
+    addBlog({
+      title,
+      author,
+      url
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+  return (
+    <div>
+      <h2>Create new</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          title:
+          <input
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+
+        <div>
+          author:
+          <input
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+
+        <div>
+          url:
+          <input
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+}
+
+const Togglable = (props) => {
+  const [visible, setVisible] = useState(false)
+
+  const hideWhenVisible = {
+    display: visible ? 'none' : ''
+  }
+
+  const showWhenVisible = {
+    display: visible ? '' : 'none'
+  }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  useImperativeHandle(props.ref, () => {
+    return {
+      toggleVisibility
+    }
+  })
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleVisibility}>
+          {props.buttonLabel}
+        </button>
+      </div>
+
+      <div style={showWhenVisible}>
+        {props.children}
+
+        <button onClick={toggleVisibility}>
+          cancel
+        </button>
+      </div>
+    </div>
+  )
+}
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -117,29 +205,7 @@ const App = () => {
     else return null
   }
 
-  const createBlogForm = () => (
-    <form onSubmit={addBlog}>
-      <div>
-        <label>
-          title
-          <input name="title" type="text"  value={newBlog.title} onChange={handleBlogChange} required />
-        </label>
-      </div>
-      <div>
-        <label>
-          author
-          <input name="author" type="text" value={newBlog.author} onChange={handleBlogChange} />
-        </label>
-      </div>
-      <div>
-        <label>
-          url
-          <input name="url" type="text" value={newBlog.url} onChange={handleBlogChange} required />
-        </label>
-      </div>
-      <button type="submit">create</button>
-    </form>
-  )
+
 
 
     return (
@@ -152,8 +218,9 @@ const App = () => {
         <button onClick={() => handleLogout()}>
           logout
         </button>
-        {createBlogForm()}
-        </div>
+        <Togglable buttonLabel="create new blog" ref={createBlogFormRef}>
+        <CreateBlogForm addBlog={addBlog} />
+    </Togglable></div>
         )}
       <div>
         {blogs.map(blog => (
