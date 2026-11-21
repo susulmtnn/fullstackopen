@@ -214,22 +214,22 @@ const Togglable = (props) => {
       <Notification message={errorMessage} color={messageColor}></Notification>
       {!user && loginForm()}
       {user && (
-        <div> <h1>Welcome {user.name}</h1>
-        <button onClick={() => handleLogout()}>
-          logout
-        </button>
-        <Togglable buttonLabel="create new blog" ref={createBlogFormRef}>
-        <CreateBlogForm addBlog={addBlog} />
-    </Togglable></div>
-        )}
-      <div>
-        {blogs.map(blog => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-          />
-        ))}
-      </div>
+        <div>
+          <h1>Welcome {user.name}</h1>
+          <button onClick={() => handleLogout()}>
+            logout
+          </button>
+          <Togglable buttonLabel="create new blog" ref={createBlogFormRef}>
+            <CreateBlogForm addBlog={addBlog} />
+          </Togglable>
+          {blogs.map(blog => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
