@@ -52,7 +52,28 @@ const App = () => {
       }, 5000)
     }
   }
+  const addLike = async blog => {
+  const updatedBlog = {
+    title: blog.title,
+    author: blog.author,
+    url: blog.url,
+    likes: blog.likes + 1,
+    user: blog.user.id
+  }
 
+  const returnedBlog = await blogService.update(blog.id, updatedBlog)
+  returnedBlog.user = blog.user
+  // Here neew to find that blog and update it in frontend aerray
+  const updatedBlogs = blogs.map(blog => {
+    if (blog.id === returnedBlog.id) {
+      return returnedBlog
+    }
+
+  return blog
+})
+
+setBlogs(updatedBlogs)
+}
 
   const addBlog = async newBlog => {
     if (!newBlog.title.trim() || !newBlog.author.trim() || !newBlog.url.trim()) {
@@ -134,6 +155,7 @@ const CreateBlogForm = ({ addBlog }) => {
     </div>
   )
 }
+
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false)
@@ -226,6 +248,7 @@ const Togglable = (props) => {
             <Blog
               key={blog.id}
               blog={blog}
+              addLike={addLike}
             />
           ))}
         </div>
