@@ -75,6 +75,7 @@ const App = () => {
 setBlogs(updatedBlogs)
 }
 
+
   const addBlog = async newBlog => {
     if (!newBlog.title.trim() || !newBlog.author.trim() || !newBlog.url.trim()) {
       setErrorMessage('Please fill all fields')
@@ -87,6 +88,7 @@ setBlogs(updatedBlogs)
 
     try {
       const createdBlog = await blogService.create(newBlog)
+      createdBlog.user = user
       setBlogs(blogs.concat(createdBlog))
       createBlogFormRef.current.toggleVisibility()
       setErrorMessage('New blog created')
@@ -102,6 +104,23 @@ setBlogs(updatedBlogs)
       }, 5000)
     }
   }
+
+  const deleteBlog = async blog => {
+  const confirmDelete = window.confirm(
+    `Delete ${blog.title} by ${blog.author}?`
+  )
+
+  if (confirmDelete) {
+    await blogService.delete_blog(blog.id)
+
+    const remainingBlogs = blogs.filter(
+      currentBlog => currentBlog.id !== blog.id
+    )
+
+    setBlogs(remainingBlogs)
+  }
+}
+
 const CreateBlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -244,13 +263,18 @@ const Togglable = (props) => {
           <Togglable buttonLabel="create new blog" ref={createBlogFormRef}>
             <CreateBlogForm addBlog={addBlog} />
           </Togglable>
-          {blogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              addLike={addLike}
-            />
-          ))}
+          {blogs
+          .slice()
+          .sort((a, b) => b.likes - a.likes)
+          .map(blog => (
+          <Blog
+          key={blog.id}
+          blog={blog}
+          addLike={addLike}
+          deleteBlog={deleteBlog}
+          user={user}
+          />
+        ))}
         </div>
       )}
     </div>
