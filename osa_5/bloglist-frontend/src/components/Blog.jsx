@@ -44,10 +44,10 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
           <button style={showWhenVisible} onClick={() => addLike(blog)}>like</button>
         </div>
         <div>{blog.user?.name}</div>
-          {user && blog.user?.username === user.username && (
-        <button onClick={() => deleteBlog(blog)}>
+        {user && blog.user?.username === user.username && (
+          <button onClick={() => deleteBlog(blog)}>
         delete
-        </button>
+          </button>
         )}
       </div>
     </div>
