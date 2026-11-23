@@ -19,4 +19,22 @@ describe('Blog app', () => {
     await expect(page.getByLabel('password')).toBeVisible()
     await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
 })
+
+  describe('Login', () => {
+    test('succeeds with correct credentials', async ({ page }) => {
+      await page.getByLabel('username').fill('mluukkai')
+      await page.getByLabel('password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+
+      await expect(page.getByText('Welcome Matti Luukkainen')).toBeVisible()
+    })
+
+    test('fails with wrong credentials', async ({ page }) => {
+      await page.getByLabel('username').fill('mluukkai')
+      await page.getByLabel('password').fill('peruna')
+      await page.getByRole('button', { name: 'login' }).click()
+
+      await expect(page.getByText('wrong credentials')).toBeVisible()
+    })
+  })
 })
