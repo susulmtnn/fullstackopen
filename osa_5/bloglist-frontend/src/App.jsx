@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useImperativeHandle } from 'react'
 import Blog from './components/Blog'
+import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -120,59 +121,59 @@ const App = () => {
     }
   }
 
-  const CreateBlogForm = ({ addBlog }) => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+  // const CreateBlogForm = ({ addBlog }) => {
+  //   const [title, setTitle] = useState('')
+  //   const [author, setAuthor] = useState('')
+  //   const [url, setUrl] = useState('')
 
-    const handleSubmit = event => {
-      event.preventDefault()
+  //   const handleSubmit = event => {
+  //     event.preventDefault()
 
-      addBlog({
-        title,
-        author,
-        url
-      })
+  //     addBlog({
+  //       title,
+  //       author,
+  //       url
+  //     })
 
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    }
+  //     setTitle('')
+  //     setAuthor('')
+  //     setUrl('')
+  //   }
 
-    return (
-      <div>
-        <h2>Create new</h2>
+  //   return (
+  //     <div>
+  //       <h2>Create new</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div>
-          title:
-            <input
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </div>
+  //       <form onSubmit={handleSubmit}>
+  //         <div>
+  //         title:
+  //           <input
+  //             value={title}
+  //             onChange={({ target }) => setTitle(target.value)}
+  //           />
+  //         </div>
 
-          <div>
-          author:
-            <input
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
+  //         <div>
+  //         author:
+  //           <input
+  //             value={author}
+  //             onChange={({ target }) => setAuthor(target.value)}
+  //           />
+  //         </div>
 
-          <div>
-          url:
-            <input
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </div>
+  //         <div>
+  //         url:
+  //           <input
+  //             value={url}
+  //             onChange={({ target }) => setUrl(target.value)}
+  //           />
+  //         </div>
 
-          <button type="submit">create</button>
-        </form>
-      </div>
-    )
-  }
+  //         <button type="submit">create</button>
+  //       </form>
+  //     </div>
+  //   )
+  // }
 
 
   const Togglable = (props) => {
