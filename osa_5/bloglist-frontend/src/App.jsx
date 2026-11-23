@@ -3,7 +3,12 @@ import Blog from './components/Blog'
 import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +18,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [messageColor, setMessageColor]= useState('red')
   const createBlogFormRef = useRef()
+  
 
 
   useEffect(() => {
@@ -250,35 +256,61 @@ const App = () => {
 
 
   return (
+  <Router>
     <div>
       <h1>BlogsApp</h1>
-      <Notification message={errorMessage} color={messageColor}></Notification>
-      {!user && loginForm()}
-      {user && (
-        <div>
-          <h1>Welcome {user.name}</h1>
-          <button onClick={() => handleLogout()}>
-            logout
-          </button>
-          <Togglable buttonLabel="create new blog" ref={createBlogFormRef}>
-            <CreateBlogForm addBlog={addBlog} />
-          </Togglable>
-          {blogs
-            .slice()
-            .sort((a, b) => b.likes - a.likes)
-            .map(blog => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                addLike={addLike}
-                deleteBlog={deleteBlog}
-                user={user}
-              />
-            ))}
-        </div>
-      )}
+
+      <Notification
+        message={errorMessage}
+        color={messageColor}
+      />
+
+      <div>
+        <Link to="/">blogs</Link>
+
+        {!user && (
+          <Link to="/login"> login</Link>
+        )}
+
+        {user && (
+          <>
+            {user.name} logged in
+            <button onClick={() => handleLogout()}>
+              logout
+            </button>
+          </>
+        )}
+      </div>
+
+      <Routes>
+        <Route
+          path="/login"
+          element={loginForm()}
+        />
+
+        <Route
+          path="/"
+          element={
+            <div>
+              {blogs
+                .slice()
+                .sort((a, b) => b.likes - a.likes)
+                .map(blog => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    addLike={addLike}
+                    deleteBlog={deleteBlog}
+                    user={user}
+                  />
+                ))}
+            </div>
+          }
+        />
+      </Routes>
     </div>
-  )
+  </Router>
+)   
 }
 
 export default App
