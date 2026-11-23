@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+        data: {
+        name: 'Second User',
+        username: 'seconduser',
+        password: 'secret'
+    }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -96,6 +103,16 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'delete' }).click()
 
       await expect(page.getByText('Test blog1', { exact: false })).not.toBeVisible()
+    })
+    test('a blog cannot be deleted by non creator', async({page})=>{
+        //logout and login with newuser
+        await page.getByRole('button', {name: 'logout'}).click()
+        await page.getByLabel('username').fill('seconduser')
+        await page.getByLabel('password').fill('secret')
+        await page.getByRole('button', { name: 'login' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByText('Test blog1')).toBeVisible()
+        await expect(page.getByRole('button', {name:'delete'}, { exact: true })).not.toBeVisible()
     })
   })
 })
