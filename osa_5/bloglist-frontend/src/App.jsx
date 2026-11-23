@@ -9,7 +9,6 @@ import {
   Routes,
   Route,
   Link,
-  useParams,
   useNavigate
 } from 'react-router-dom'
 
@@ -176,15 +175,15 @@ const App = () => {
     }
   }
 
-const deleteBlog = async blog => {
-  await blogService.delete_blog(blog.id)
+  const deleteBlog = async blog => {
+    await blogService.delete_blog(blog.id)
 
-  const remainingBlogs = blogs.filter(
-    currentBlog => currentBlog.id !== blog.id
-  )
+    const remainingBlogs = blogs.filter(
+      currentBlog => currentBlog.id !== blog.id
+    )
 
-  setBlogs(remainingBlogs)
-}
+    setBlogs(remainingBlogs)
+  }
 
 
 
