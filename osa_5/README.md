@@ -1,1 +1,1 @@
-The frontend part contains the code written by me and the exercises. But it is made to be running with the model answers from the course that are in the backend folder.
+The frontend part contains the code written by me and the exercises. But it is made to be running with the model answers from the course that are in the backend folder. The basis of the backend is the model backend that was recommended to be used in this part. However, there might be some small modifications I made.
