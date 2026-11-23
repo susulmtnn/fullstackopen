@@ -1,57 +1,57 @@
-  import { useState } from 'react'
-  
-  const CreateBlogForm = ({ addBlog }) => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+import { useState } from 'react'
 
-    const handleSubmit = event => {
-      event.preventDefault()
+const CreateBlogForm = ({ addBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
-      addBlog({
-        title,
-        author,
-        url
-      })
+  const handleSubmit = event => {
+    event.preventDefault()
 
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    }
+    addBlog({
+      title,
+      author,
+      url
+    })
 
-    return (
-      <div>
-        <h2>Create new</h2>
-
-        <form onSubmit={handleSubmit}>
-          <label>
-          title
-            <input
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
-
-          <label>
-          author
-            <input
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-
-          <label>
-          url
-            <input
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-
-          <button type="submit">create</button>
-        </form>
-      </div>
-    )
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
-  export default CreateBlogForm
+  return (
+    <div>
+      <h2>Create new</h2>
+
+      <form onSubmit={handleSubmit}>
+        <label>
+          title
+          <input
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </label>
+
+        <label>
+          author
+          <input
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </label>
+
+        <label>
+          url
+          <input
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </label>
+
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+}
+
+export default CreateBlogForm
