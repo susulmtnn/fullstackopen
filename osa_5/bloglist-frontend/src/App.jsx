@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useImperativeHandle } from 'react'
+import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
@@ -8,17 +8,40 @@ import {
   Routes,
   Route,
   Link,
-  useParams
+  useParams,
+  useNavigate
 } from 'react-router-dom'
+
+const CreateBlogView = ({ addBlog }) => {
+  const navigate = useNavigate()
+
+  const createBlog = async newBlog => {
+    await addBlog(newBlog)
+    navigate('/')
+  }
+
+  return (
+
+    <CreateBlogForm addBlog={createBlog} />
+  )
+}
 
 const IndividualBlogView = ({ blogs, addLike, deleteBlog, user }) => {
   const id = useParams().id
+  const navigate = useNavigate()
 
   const blog = blogs.find(blog => blog.id === id)
 
   if (!blog) {
     return null
   }
+
+const handleDelete = async () => {
+  if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+    await deleteBlog(blog)
+    navigate('/')
+  }
+}
 
   return (
     <div>
@@ -43,14 +66,13 @@ const IndividualBlogView = ({ blogs, addLike, deleteBlog, user }) => {
       </div>
 
       {user && blog.user?.username === user.username && (
-        <button onClick={() => deleteBlog(blog)}>
+        <button onClick={handleDelete}>
           delete
         </button>
       )}
     </div>
   )
 }
-
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -59,8 +81,8 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [messageColor, setMessageColor]= useState('red')
-  const createBlogFormRef = useRef()
-  
+  // const createBlogFormRef = useRef()
+
 
 
   useEffect(() => {
@@ -138,7 +160,7 @@ const App = () => {
       const createdBlog = await blogService.create(newBlog)
       createdBlog.user = user
       setBlogs(blogs.concat(createdBlog))
-      createBlogFormRef.current.toggleVisibility()
+      //createBlogFormRef.current.toggleVisibility()
       setErrorMessage('New blog created')
       setMessageColor('green')
       setTimeout(() => {
@@ -153,63 +175,57 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async blog => {
-    const confirmDelete = window.confirm(
-      `Delete ${blog.title} by ${blog.author}?`
-    )
+const deleteBlog = async blog => {
+  await blogService.delete_blog(blog.id)
 
-    if (confirmDelete) {
-      await blogService.delete_blog(blog.id)
+  const remainingBlogs = blogs.filter(
+    currentBlog => currentBlog.id !== blog.id
+  )
 
-      const remainingBlogs = blogs.filter(
-        currentBlog => currentBlog.id !== blog.id
-      )
-
-      setBlogs(remainingBlogs)
-    }
-  }
+  setBlogs(remainingBlogs)
+}
 
 
 
-  const Togglable = (props) => {
-    const [visible, setVisible] = useState(false)
+  // const Togglable = (props) => {
+  //   const [visible, setVisible] = useState(false)
 
-    const hideWhenVisible = {
-      display: visible ? 'none' : ''
-    }
+  //   const hideWhenVisible = {
+  //     display: visible ? 'none' : ''
+  //   }
 
-    const showWhenVisible = {
-      display: visible ? '' : 'none'
-    }
+  //   const showWhenVisible = {
+  //     display: visible ? '' : 'none'
+  //   }
 
-    const toggleVisibility = () => {
-      setVisible(!visible)
-    }
+  //   const toggleVisibility = () => {
+  //     setVisible(!visible)
+  //   }
 
-    useImperativeHandle(props.ref, () => {
-      return {
-        toggleVisibility
-      }
-    })
+  //   useImperativeHandle(props.ref, () => {
+  //     return {
+  //       toggleVisibility
+  //     }
+  //   })
 
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={toggleVisibility}>
-            {props.buttonLabel}
-          </button>
-        </div>
+  //   return (
+  //     <div>
+  //       <div style={hideWhenVisible}>
+  //         <button onClick={toggleVisibility}>
+  //           {props.buttonLabel}
+  //         </button>
+  //       </div>
 
-        <div style={showWhenVisible}>
-          {props.children}
+  //       <div style={showWhenVisible}>
+  //         {props.children}
 
-          <button onClick={toggleVisibility}>
-          cancel
-          </button>
-        </div>
-      </div>
-    )
-  }
+  //         <button onClick={toggleVisibility}>
+  //         cancel
+  //         </button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -245,71 +261,77 @@ const App = () => {
 
 
   return (
-  <Router>
-    <div>
-      <h1>BlogsApp</h1>
-
-      <Notification
-        message={errorMessage}
-        color={messageColor}
-      />
-
+    <Router>
       <div>
-        <Link to="/">blogs</Link>
+        <h1>BlogsApp</h1>
 
-        {!user && (
-          <Link to="/login"> login</Link>
-        )}
-
-        {user && (
-          <>
-            {user.name} logged in
-            <button onClick={() => handleLogout()}>
-              logout
-            </button>
-          </>
-        )}
-      </div>
-
-      <Routes>
-        <Route
-          path="/login"
-          element={loginForm()}
-        />
-        <Route
-        path="/blogs/:id"
-        element={
-        <IndividualBlogView
-        blogs={blogs}
-        addLike={addLike}
-        deleteBlog={deleteBlog}
-        user={user}
-        />
-        }
+        <Notification
+          message={errorMessage}
+          color={messageColor}
         />
 
+        <div>
+          <Link to="/">blogs</Link>
 
-        <Route
-          path="/"
-          element={
+          {!user && (
+            <Link to="/login"> login</Link>
+          )}
+
+          {user && (
             <div>
-              {blogs
-              .slice()
-              .sort((a, b) => b.likes - a.likes)
-              .map(blog => (
-              <div key={blog.id}>
-              <Link to={`/blogs/${blog.id}`}>
-              {blog.title} {blog.author}
-              </Link>
-              </div>
-              ))}
+              <Link to="/create">create new</Link>
+              {user.name} logged in
+              <button onClick={() => handleLogout()}>
+          logout
+              </button>
             </div>
-          }
-        />
-      </Routes>
-    </div>
-  </Router>
-)   
+          )}
+        </div>
+
+        <Routes>
+          <Route
+            path="/login"
+            element={loginForm()}
+          />
+          <Route
+            path="/blogs/:id"
+            element={
+              <IndividualBlogView
+                blogs={blogs}
+                addLike={addLike}
+                deleteBlog={deleteBlog}
+                user={user}
+              />
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <CreateBlogView addBlog={addBlog} />
+            }
+          />
+
+          <Route
+            path="/"
+            element={
+              <ul>
+                {blogs
+                  .slice()
+                  .sort((a, b) => b.likes - a.likes)
+                  .map(blog => (
+                    <li key={blog.id}>
+                      <Link to={`/blogs/${blog.id}`}>
+                        {blog.title} {blog.author}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
+  )
 }
 
 export default App
