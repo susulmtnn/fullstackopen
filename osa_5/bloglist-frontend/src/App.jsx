@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import IndividualBlogView from './components/IndividualBlogView'
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,53 +27,53 @@ const CreateBlogView = ({ addBlog }) => {
   )
 }
 
-const IndividualBlogView = ({ blogs, addLike, deleteBlog, user }) => {
-  const id = useParams().id
-  const navigate = useNavigate()
+// const IndividualBlogView = ({ blogs, addLike, deleteBlog, user }) => {
+//   const id = useParams().id
+//   const navigate = useNavigate()
 
-  const blog = blogs.find(blog => blog.id === id)
+//   const blog = blogs.find(blog => blog.id === id)
 
-  if (!blog) {
-    return null
-  }
+//   if (!blog) {
+//     return null
+//   }
 
-const handleDelete = async () => {
-  if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
-    await deleteBlog(blog)
-    navigate('/')
-  }
-}
+// const handleDelete = async () => {
+//   if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+//     await deleteBlog(blog)
+//     navigate('/')
+//   }
+// }
 
-  return (
-    <div>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
+//   return (
+//     <div>
+//       <h2>
+//         {blog.title} {blog.author}
+//       </h2>
 
-      <div>{blog.url}</div>
+//       <div>{blog.url}</div>
 
-      <div>
-        likes {blog.likes}
+//       <div>
+//         likes {blog.likes}
 
-        {user && (
-          <button onClick={() => addLike(blog)}>
-            like
-          </button>
-        )}
-      </div>
+//         {user && (
+//           <button onClick={() => addLike(blog)}>
+//             like
+//           </button>
+//         )}
+//       </div>
 
-      <div>
-        added by {blog.user?.name}
-      </div>
+//       <div>
+//         added by {blog.user?.name}
+//       </div>
 
-      {user && blog.user?.username === user.username && (
-        <button onClick={handleDelete}>
-          delete
-        </button>
-      )}
-    </div>
-  )
-}
+//       {user && blog.user?.username === user.username && (
+//         <button onClick={handleDelete}>
+//           delete
+//         </button>
+//       )}
+//     </div>
+//   )
+// }
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
