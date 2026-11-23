@@ -7,8 +7,50 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useParams
 } from 'react-router-dom'
+
+const IndividualBlogView = ({ blogs, addLike, deleteBlog, user }) => {
+  const id = useParams().id
+
+  const blog = blogs.find(blog => blog.id === id)
+
+  if (!blog) {
+    return null
+  }
+
+  return (
+    <div>
+      <h2>
+        {blog.title} {blog.author}
+      </h2>
+
+      <div>{blog.url}</div>
+
+      <div>
+        likes {blog.likes}
+
+        {user && (
+          <button onClick={() => addLike(blog)}>
+            like
+          </button>
+        )}
+      </div>
+
+      <div>
+        added by {blog.user?.name}
+      </div>
+
+      {user && blog.user?.username === user.username && (
+        <button onClick={() => deleteBlog(blog)}>
+          delete
+        </button>
+      )}
+    </div>
+  )
+}
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -127,59 +169,6 @@ const App = () => {
     }
   }
 
-  // const CreateBlogForm = ({ addBlog }) => {
-  //   const [title, setTitle] = useState('')
-  //   const [author, setAuthor] = useState('')
-  //   const [url, setUrl] = useState('')
-
-  //   const handleSubmit = event => {
-  //     event.preventDefault()
-
-  //     addBlog({
-  //       title,
-  //       author,
-  //       url
-  //     })
-
-  //     setTitle('')
-  //     setAuthor('')
-  //     setUrl('')
-  //   }
-
-  //   return (
-  //     <div>
-  //       <h2>Create new</h2>
-
-  //       <form onSubmit={handleSubmit}>
-  //         <div>
-  //         title:
-  //           <input
-  //             value={title}
-  //             onChange={({ target }) => setTitle(target.value)}
-  //           />
-  //         </div>
-
-  //         <div>
-  //         author:
-  //           <input
-  //             value={author}
-  //             onChange={({ target }) => setAuthor(target.value)}
-  //           />
-  //         </div>
-
-  //         <div>
-  //         url:
-  //           <input
-  //             value={url}
-  //             onChange={({ target }) => setUrl(target.value)}
-  //           />
-  //         </div>
-
-  //         <button type="submit">create</button>
-  //       </form>
-  //     </div>
-  //   )
-  // }
 
 
   const Togglable = (props) => {
@@ -287,23 +276,33 @@ const App = () => {
           path="/login"
           element={loginForm()}
         />
+        <Route
+        path="/blogs/:id"
+        element={
+        <IndividualBlogView
+        blogs={blogs}
+        addLike={addLike}
+        deleteBlog={deleteBlog}
+        user={user}
+        />
+        }
+        />
+
 
         <Route
           path="/"
           element={
             <div>
               {blogs
-                .slice()
-                .sort((a, b) => b.likes - a.likes)
-                .map(blog => (
-                  <Blog
-                    key={blog.id}
-                    blog={blog}
-                    addLike={addLike}
-                    deleteBlog={deleteBlog}
-                    user={user}
-                  />
-                ))}
+              .slice()
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog => (
+              <div key={blog.id}>
+              <Link to={`/blogs/${blog.id}`}>
+              {blog.title} {blog.author}
+              </Link>
+              </div>
+              ))}
             </div>
           }
         />
