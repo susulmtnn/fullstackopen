@@ -2,6 +2,42 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
 
+test('clicking like twice adds two likes', async () => {
+  const blog = {
+    title: 'Random title',
+    author: 'Random Suvi',
+    url: 'https://pizza.com/',
+    likes: 3,
+    user: {
+      name: 'Suvi suvi',
+      username: 'testsuvi'
+    }
+  }
+
+  const mockHandler = vi.fn()
+
+  render(
+    <Blog
+      blog={blog}
+      addLike={mockHandler}
+    />
+  )
+
+  const user = userEvent.setup()
+
+  const viewbutton = screen.getByText('view')
+  await user.click(viewbutton)
+
+  const likebutton = screen.getByText('like')
+
+  await user.click(likebutton)
+  await user.click(likebutton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
+
+
+
 test('url, likes and user visible after view button clicked', async () => {
   const blog = {
     title: 'Random title',
